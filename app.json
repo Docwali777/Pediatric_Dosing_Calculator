@@ -1,0 +1,11 @@
+{
+  "expo": {
+    "name": "dosing_calculator",
+    "slug": "dosing_calculator",
+    "version": "1.0.0",
+    "assetBundlePatterns": [
+      "**/*"
+    ]
+  },
+  "name": "dosing_calculator"
+}
