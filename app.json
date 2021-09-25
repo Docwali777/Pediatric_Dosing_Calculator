@@ -1,11 +1,29 @@
 {
   "expo": {
-    "name": "dosing_calculator",
-    "slug": "dosing_calculator",
+    "name": "Peds Dose Calc",
+    "slug": "Peds Dose Calc",
     "version": "1.0.0",
+    "privacy": "public",
+    "orientation": "default",
+    "icon": "./src/assets/512.png",
     "assetBundlePatterns": [
       "**/*"
-    ]
-  },
-  "name": "dosing_calculator"
+    ],
+    "supportsTablet": true,
+    "splash": {
+      "image": "./src/assets/512.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#ffffff"
+    }, 
+    "updates":{
+      "fallbackToCacheTimeout": 0
+    }, 
+    "ios": {
+      "supportsTablet": true, 
+      "bundleIdentifier": "org.name.dosingcalculator",
+      "buildNumber": "1.0.0" 
+    }
+  }
 }
+
+

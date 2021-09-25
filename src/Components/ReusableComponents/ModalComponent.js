@@ -6,7 +6,7 @@ import { AntDesign } from '@expo/vector-icons';
 
 const ModalComponent = ({children, animationType, transparent, visible}) => {
 
-  const [modalVisible, setModalVisible] = useState(false)
+  const [modalVisible, setModalVisible] = useState(true)
 
     return (
       <View style={styles.centeredView}>
@@ -23,7 +23,7 @@ const ModalComponent = ({children, animationType, transparent, visible}) => {
             <TouchableOpacity onPress={()=>setModalVisible(!modalVisible)} style={styles.closeIconView} >
               <AntDesign name="closecircle" size={24} color="red" />
               </TouchableOpacity>
-             
+              <Text>Helle</Text>
             </View>
           </View>
             
@@ -40,9 +40,8 @@ export default ModalComponent
 
 const styles = StyleSheet.create({
     centeredView: {
-        flex: 1,
-        alignItems: "center",
-        marginTop: 22,
+     
+      alignItems: "center",
         paddingTop: 100
       },
       closeIconView:{

@@ -20,7 +20,7 @@ export default HeaderTitle
 const styles = StyleSheet.create({
     container: {
         alignItems: "center", 
-        marginBottom:20,
+        marginBottom:10,
        
     },
     headerTextContainer:{

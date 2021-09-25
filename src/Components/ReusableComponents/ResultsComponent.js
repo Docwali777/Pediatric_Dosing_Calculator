@@ -3,18 +3,18 @@ import { StyleSheet, Text,TextInput, View } from 'react-native'
 
 import {   Colors } from "../../Configuration/Colors"
 
-const ResultsComponent = ({result, label,unit}) => {
+const ResultsComponent = ({result, label,unit, customContainerBackground}) => {
 
 
     return (
        
             <View style={styles.container}>
-                <View style={styles.labelContainer}>
+                <View style={[styles.labelContainer, customContainerBackground]}>
                 <Text style={styles.labelText} >{label}</Text>
                 </View>
               
               <View style={styles.resultsContainer}>
-                <Text>{result}</Text>
+                <Text style={styles.resultText} >{result}</Text>
            
               </View>
 
@@ -35,7 +35,7 @@ const styles = StyleSheet.create({
         marginBottom: 20,
         borderColor: Colors.silver, 
         borderWidth: 1, 
-        width: 342
+        width: 342, 
         
     },
     frequencyText:{
@@ -56,16 +56,7 @@ const styles = StyleSheet.create({
         fontWeight: "600",
         color: Colors.powerderedSugar
     },
-    resultsContainer: {
-        height: 40,
-        fontSize: 20,
-        width: 100, 
-        alignItems:"center",
-        justifyContent: "center",
-        width: 150
-        
-       
-},
+
 textIput: {
     // height: 40,
     fontSize: 18, 
@@ -83,6 +74,20 @@ unitText: {
     fontSize: 20,
     fontWeight: "600", 
     color: Colors.powerderedSugar
+},    
+resultsContainer: {
+    height: 40,
+    fontSize: 20,
+    width: 100, 
+    alignItems:"center",
+    justifyContent: "center", 
+    width: 190
+    
+   
+},
+resultText:{
+    fontSize: 18, 
+    fontWeight: "700"
 }
 // 
 })

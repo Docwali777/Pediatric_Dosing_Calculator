@@ -1,5 +1,8 @@
-import React, {useState} from 'react'
+import React, {useEffect,  useState, useContext} from 'react'
 import {Keyboard, StyleSheet, Text, TextInput, View } from 'react-native'
+
+//context
+import { VitalsContext } from '../../Context/Vitals';
 
 // import { Picker } from "@react-native-picker/picker"
 import RNPickerSelect from "react-native-picker-select";
@@ -12,36 +15,56 @@ import ToggleSwitchComponent from '../ReusableComponents/ToggleSwitchComponent';
 import ButtonComponent from '../ReusableComponents/ButtonComponent';
 import ResultsComponent from '../ReusableComponents/ResultsComponent';
 
+import KilogramsOrPounds from '../KilogramsOrPounds';
+import TabletOrLiquidComponent from '../TabletOrLiquidComponent';
+import  {Colors}  from "../../Configuration/Colors"
+
+
 const Calculator = () => {
   
-    const [results, setResults] = useState(false)
-    const [dose, setDose] = useState(null)   
-
+    const {dose, setDose, kilograms, setKilograms, pounds, setPounds, concentration, setConcentration } = useContext(VitalsContext)
+    const [weight, setWeight] = useState(null)
+    const [results, setResults] = useState(null)
     const [frequency, setFrequency]=useState(null)
 
-
-    const [kilograms, setKilograms]=useState(null)
-    const [pounds, setPounds]=useState(null)
-    const [toggleKilograms, setToggleKilograms] = useState(true)
-
-    const [toggleConcentration, settoggleConcentration]=useState(true)
-
-    const kilogramsOrPoundsUnitDisplay = toggleKilograms ?  "kg" :"pounds"
+    const [calculatedDosage, setCalculatedDosage] = useState(null)
 
 
+    useEffect(()=>{
+      if(weight){
+        calculateTabletDosing(weight)
+      }
+    }, [weight])
+
+    const calculateTabletDosing = ()=>{
+   
+      if(concentration.mg === null){
+     
+        const w = ((weight*dose)/(24/frequency)).toFixed()
+         return  setCalculatedDosage(`${w} mg`)
+      } else {
+ 
+
+        var volume = ((weight * dose) /(concentration.mg/concentration.ml))/(24/frequency)
+      
+      return   setCalculatedDosage(`${volume.toFixed(1)} ml   ( ${((weight * dose)/(24/frequency)).toFixed()} mg )`)
+
+      }
+    }
 
     const handleCalculation = ()=>{
-
-        if(toggleKilograms){
-          setKilograms(kilograms)
+        if(kilograms){
+          setWeight(kilograms)
         } else {
-          console.log("pounds");
-          const kg =( pounds/2.2).toFixed(2)
-          setPounds(kg)
+          const kg = (pounds/2.2)
+          setWeight(kg)
         }
+
+  
         Keyboard.dismiss()
-        setResults(!results)
-      
+   setResults(!results)
+
+  
     }
 
     const handleClear = ()=>{
@@ -50,11 +73,16 @@ const Calculator = () => {
       setFrequency(null)
       setDose(null)
       setResults(!results)
+      setConcentration(prev =>({mg: null, ml: null}))
+      setWeight(null)
+      setCalculatedDosage(null)
+      
     }
 
     //
-    const disabled = kilograms === null && dose === null && frequency === null
-console.log({kilograms, pounds});
+    const disabled =  dose == null || frequency === null 
+
+  
     return (
         <View style={styles.container}>
               <HeaderTitle>Pediatric Dosing Calculator</HeaderTitle>
@@ -62,72 +90,11 @@ console.log({kilograms, pounds});
 
 
                   <View style={{display: results == true ? "none" : ""}}>
-                  <ToggleSwitchComponent
-                   onPress={()=> {
-                 console.log("togg")
-                 setKilograms(null)
-                 setPounds(null)
-                 setToggleKilograms(!toggleKilograms)
-                }}
-                labelLeft="kg"
-                labelRight="pounds"
-              />
+
+                  <KilogramsOrPounds />
+
+                  <TabletOrLiquidComponent />
             
-              {
-                toggleKilograms ?
-                <LabelAndTextInputComponent
-                label="Weight"
-                unit={"kg"}
-                value={kilograms}
-                placeholder={"kg"}
-                onChangeText={weight=>{
-                  setKilograms(weight)
-                }}
-                keyboardType="numeric"
-                onFocus={()=>setKilograms(null)}
-                /> :
-
-                <LabelAndTextInputComponent
-                label="Weight"
-                unit={"pounds"}
-                value={pounds}
-                placeholder={"pounds"}
-                onChangeText={weight=>{
-                  setPounds(weight)
-                }}
-                keyboardType="numeric"
-                onFocus={()=>setPounds(null)}
-                />
-              }
-
-              <ToggleSwitchComponent
-                onPress={()=>settoggleConcentration(!toggleConcentration)}
-                labelLeft="tablet"
-                labelRight="liquid"
-              />
-            {
-              toggleConcentration ?
-              <LabelAndTextInputComponent
-              label="Dose"
-              unit="mg/kg"
-              value={dose}
-              placeholder="dose"
-              onChangeText={dose=>setDose(dose)}
-              keyboardType="number-pad"
-              onFocus={()=>setDose(null)
-              }
-              /> :
-              <LabelAndTextInputComponent
-              label="Concentration"
-              unit="mg/ml"
-              value={dose}
-              placeholder="dose"
-              onChangeText={dose=>setDose(dose)}
-              keyboardType="number-pad"
-              onFocus={()=>setDose(null)
-              }
-              />
-            }
 
               <LabelAndTextInputComponent
                   label="Frequency"
@@ -139,6 +106,7 @@ console.log({kilograms, pounds});
                   onFocus={()=>{
                     setFrequency(null)
                   }}
+                  containerStyle={{backgroundColor: frequency !== null ? Colors.lightPurple : Colors.gray}}
                   />
 
                   </View>
@@ -147,6 +115,7 @@ console.log({kilograms, pounds});
                     title={results ? "Clear" : "Calculate"}
                     onPress={results ? handleClear : handleCalculation}
                     disabled={disabled}
+                    buttonStyle={{backgroundColor: disabled ? "gray" : "purple", marginBottom: 40}}
                   />
                
                  { 
@@ -154,17 +123,14 @@ console.log({kilograms, pounds});
                    <View >
                      <ResultsComponent
                         label="Dosage"
-                        result=  {
-                          toggleKilograms ?
-                          `${((kilograms*dose)/(24/frequency)).toFixed(1)} mg`:
-                          `${((pounds*dose)/(24/frequency)).toFixed(1)} mg`
-                        } 
-                          
+                        result=  {calculatedDosage} 
+                        customContainerBackground={{backgroundColor: Colors.blue}}
                         unit={"mg"}
                      />
                       <ResultsComponent
                         label="Administer"
                         result={`every ${frequency} hours`}
+                        customContainerBackground={{backgroundColor: Colors.aquaMarineGreen}}
                         
                      />
                        
